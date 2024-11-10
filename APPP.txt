@@ -1,0 +1,40 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Register from './components/Register';
+import DeliveryBoyLogin from './components/Login';
+import Home from './components/Home';
+import Contact from './components/Contact';
+import About from './components/About';
+import Menu from './components/Menu';
+import Welcome from './components/Welcome';
+import Address from './components/Address';
+import Payment from './components/Payment';
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        {/* Welcome page as the initial page */}
+        <Route path="/" element={<Welcome />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<DeliveryBoyLogin />} />
+        <Route path="/home" element={<ProtectedRoute component={Home} />} />
+        <Route path="/menu" element={<ProtectedRoute component={Menu} />} />
+        <Route path="/about" element={<ProtectedRoute component={About} />} />
+        <Route path="/contact" element={<ProtectedRoute component={Contact} />} />
+        <Route path='/address' element={<ProtectedRoute component={Address}/>}/>
+        <Route path='/payment' element={<ProtectedRoute component={Payment}/>}/>
+        {/* Redirect any other path to "/" */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
+  );
+};
+
+// Protected Route Component to check login before showing Home
+const ProtectedRoute = ({ component: Component }) => {
+  const token = localStorage.getItem('token'); // assuming token indicates login
+
+  return token ? <Component /> : <Navigate to="/login" />;
+};
+
+export default App;

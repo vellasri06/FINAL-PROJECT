@@ -1,0 +1,277 @@
+// src/components/Payment.js
+import React, { useState } from 'react';
+import './Payment.css';
+
+const Payment = () => {
+    const [paymentMethod, setPaymentMethod] = useState(null);
+    const [bankDetails, setBankDetails] = useState({
+        accountHolder: '',
+        accountNumber: '',
+        bankName: '',
+        ifscCode: '',
+    });
+
+    const sendAdminNotification = (message, orderId, userAddress) => {
+        fetch('http://localhost:5000/api/notify/admin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message, orderId, userAddress })
+        })
+        .then(response => response.json())
+        .then(data => console.log("Notification sent:", data))
+        .catch(error => console.error("Error sending notification:", error));
+    };
+
+    const handlePayOnDelivery = () => {
+        setPaymentMethod('payOnDelivery');
+        alert("Order placed successfully!");  // Notify user
+        // Example data for admin notification
+        const message = "New 'Pay on Delivery' order placed";
+        const orderId = "12345";  // Replace with actual order ID
+        const userAddress = "User's delivery address";  // Replace with actual user address
+        sendAdminNotification(message, orderId, userAddress);
+    };
+
+    const handleBankQrPayment = () => {
+        setPaymentMethod('bankQr');
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setBankDetails({ ...bankDetails, [name]: value });
+    };
+
+    const handleSubmitBankDetails = (e) => {
+        e.preventDefault();
+        alert("Bank payment details submitted successfully!");
+        console.log("Bank Details:", bankDetails);
+        // Example data for admin notification
+        const message = "New bank/QR payment order placed";
+        const orderId = "12345";  // Replace with actual order ID
+        const userAddress = "User's delivery address";  // Replace with actual user address
+        sendAdminNotification(message, orderId, userAddress);
+    };
+
+    return (
+        <div className="payment-container">
+            <h2 className="payment-title">Select Your Payment Method</h2>
+
+            {!paymentMethod && (
+                <div className="payment-options">
+                    <div className="payment-option">
+                        <h3>Pay on Delivery</h3>
+                        <p>Pay for your order in cash or card when it arrives.</p>
+                        <button className="payment-btn" onClick={handlePayOnDelivery}>
+                            Select Pay on Delivery
+                        </button>
+                    </div>
+
+                    <div className="payment-option">
+                        <h3>Pay through Bank or QR Scan</h3>
+                        <p>Choose this option to pay via your bank account or by scanning a QR code.</p>
+                        <button className="payment-btn" onClick={handleBankQrPayment}>
+                            Select Bank/QR Payment
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {paymentMethod === 'payOnDelivery' && (
+                <div className="confirmation-message">
+                    <h3>Order placed successfully!</h3>
+                    <p>Thank you for choosing Pay on Delivery. Your order is on its way!</p>
+                </div>
+            )}
+
+            {paymentMethod === 'bankQr' && (
+                <div className="bank-qr-details">
+                    <h3>Enter Your Bank Details</h3>
+                    <form onSubmit={handleSubmitBankDetails} className="bank-details-form">
+                        <div className="input-group">
+                            <label>Account Holder Name</label>
+                            <input
+                                type="text"
+                                name="accountHolder"
+                                value={bankDetails.accountHolder}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label>Account Number</label>
+                            <input
+                                type="text"
+                                name="accountNumber"
+                                value={bankDetails.accountNumber}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label>Bank Name</label>
+                            <input
+                                type="text"
+                                name="bankName"
+                                value={bankDetails.bankName}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label>IFSC Code</label>
+                            <input
+                                type="text"
+                                name="ifscCode"
+                                value={bankDetails.ifscCode}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <button type="submit" className="submit-btn">
+                            Submit Bank Details
+                        </button>
+                    </form>
+                    <div className="qr-code-section">
+                        <h4>Or Scan this QR Code to Pay</h4>
+                        <img src="https://dummyimage.com/150x150/000/fff.png&text=QR+Code" alt="QR Code" className="qr-code" />
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default Payment;/* Payment.css */
+
+.payment-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.payment-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.payment-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 800px;
+}
+
+.payment-option {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.payment-option h3 {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.payment-option p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.payment-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.payment-btn:hover {
+    background-color: #45a049;
+}
+
+.confirmation-message, .bank-qr-details {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 20px;
+}
+
+.bank-details-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.submit-btn {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background-color: #0069D9;
+}
+
+.qr-code-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.qr-code {
+    width: 150px;
+    height: 150px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}

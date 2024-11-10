@@ -1,0 +1,148 @@
+// src/components/DeliveryBoyLogin.js
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import './DeliveryBoyLogin.css';
+
+const DeliveryBoyLogin = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate(); // Hook to navigate to different pages
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: username, password })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Save the token to localStorage
+        localStorage.setItem('token', data.token);
+        alert('Login successful!');
+        navigate('/home'); // Redirect to the home or dashboard page
+      } else {
+        console.error('Error response from server:', data); // Log the error response
+        setErrorMessage(data.message || 'Login failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      setErrorMessage('An error occurred. Please try again.');
+    }
+  };
+
+  return (
+    <div className="login-page">
+    <div className="login-container">
+      <h2>Delivery Boy Login</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          required
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit">Login</button>
+        <br></br>
+      </form>
+      {errorMessage && <div className="error">{errorMessage}</div>}
+      
+      <button className="forgot-password-link" onClick={() => alert('Forgot password functionality coming soon!')}>
+        Forgot Password?
+      </button>
+    </div>
+    </div>
+  );
+};
+
+export default DeliveryBoyLogin;/* Register.css */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url("https://images6.alphacoders.com/439/439410.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+  .login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    text-align: center;
+    margin:100px auto;
+    
+  }
+  
+  .register-container h1 {
+    font-size: 26px;
+    text-align: center;
+    color: #082c32;
+    margin-bottom: 25px;
+  }
+  
+  .register-container h1 span {
+    font-weight: bold;
+    font-size: 30px;
+    text-transform: uppercase;
+    color: #114d57;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  form label {
+    font-size: 16px;
+    color: #10151a;
+    margin-bottom: 5px;
+  }
+  
+  form input {
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #27ae60;
+    border-radius: 5px;
+    background-color: rgb(234, 227, 227);
+    color: #2c3e50;
+    font-size: 16px;
+  }
+  
+  form input::placeholder {
+    color: #95a5a6;
+  }
+  
+  button {
+    padding: 12px;
+    background-color: #e74c3c;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #c0392b;
+  }

@@ -1,0 +1,148 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Address.css';
+
+const Address = () => {
+    const [address, setAddress] = useState({
+        street: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        phoneNumber: ''
+    });
+    const navigate = useNavigate();
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setAddress({ ...address, [name]: value });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const { street, city, state, zipCode, phoneNumber } = address;
+        if (street && city && state && zipCode && phoneNumber) {
+            alert(`Order will be delivered to: ${street}, ${city}, ${state} - ${zipCode}. Contact: ${phoneNumber}`);
+            navigate('/payment');  // Navigate to the payment page
+        } else {
+            alert("Please fill in all the fields.");
+        }
+    };
+    
+
+    return (
+        <div className="address-container">
+            <h2>Enter Delivery Address</h2>
+            <form onSubmit={handleSubmit} className="address-form">
+                <div className="input-group">
+                    <label>Street Address</label>
+                    <input
+                        type="text"
+                        name="street"
+                        placeholder="123 Main St"
+                        value={address.street}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div className="input-group">
+                    <label>City</label>
+                    <input
+                        type="text"
+                        name="city"
+                        placeholder="City"
+                        value={address.city}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div className="input-group">
+                    <label>State</label>
+                    <input
+                        type="text"
+                        name="state"
+                        placeholder="State"
+                        value={address.state}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div className="input-group">
+                    <label>ZIP Code</label>
+                    <input
+                        type="text"
+                        name="zipCode"
+                        placeholder="ZIP Code"
+                        value={address.zipCode}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div className="input-group">
+                    <label>Phone Number</label>
+                    <input
+                        type="tel"
+                        name="phoneNumber"
+                        placeholder="Phone Number"
+                        value={address.phoneNumber}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <button type="submit" className="submit-btn">Submit Address</button>
+            </form>
+        </div>
+    );
+};
+
+export default Address;/* src/components/Address.css */
+.address-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+  
+  .address-container h2 {
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .address-form .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .address-form label {
+    display: block;
+    font-weight: bold;
+    color: #666;
+  }
+  
+  .address-form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #ff5733;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .submit-button:hover {
+    background-color: #ff784f;
+  }
